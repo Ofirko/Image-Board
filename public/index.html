@@ -4,7 +4,49 @@
     <title></title>
 </head>
 <body>
+    <h1>Welcome to my imageboard!</h1>
+
+<div id='main'>
+
+<!-- <h3 @click='myFn'>clicking is fun!!!</h3> -->
+<form>
+    <input type="text" v-model = "form.title"  name = "title">
+    <input type="text" v-model = "form.description" name = "description">
+    <input type="text" v-model = "form.username" name = "username">
+    <input type="file" accept="image/*"  name= "file" @change = "handleFileChange" >
+    <button @click = "uploadFile"> Upload! </button>
+</form>
+
+
+<div v-for='image in images'>
+
+<img v-bind:src= "image.url" >
+<h3> {{image.title}}</h3>
+
+<p v-if= 'images.length === 0'>NO IMAGES AT THE MOMENT</p>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<script src="/js/axios.min.js"></script>
     <script src="/js/vue.js"></script>
-    <script src="/js/axios.min.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>

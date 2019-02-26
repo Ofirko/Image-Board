@@ -1,3 +1,5 @@
 {
-    "s3Url": "https://s3.amazonaws.com/spicedling/"
+    "s3Url": "https://s3.amazonaws.com/spicedling/",
+    "user": "ofirkatz",
+    "password": "1234567"
 }
