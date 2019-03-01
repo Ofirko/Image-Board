@@ -2,11 +2,12 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" media="screen" href="/style.css">
 </head>
 <body>
     <h1>Welcome to my imageboard!</h1>
 
-<div id='main'>
+<div id='main' >
 
 <!-- <h3 @click='myFn'>clicking is fun!!!</h3> -->
 <form>
@@ -17,34 +18,39 @@
     <button @click = "uploadFile"> Upload! </button>
 </form>
 
-
-<div v-for='image in images'>
-
+<div class="container" >
+<div v-for='image in images' class="imgbox" @click="imgPop(image.id)">
 <img v-bind:src= "image.url" >
-<h3> {{image.title}}</h3>
-
+<h3 class="title">{{image.title}}</h3>
+</div>
 <p v-if= 'images.length === 0'>NO IMAGES AT THE MOMENT</p>
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div  v-if = "clicked">
+<img-screen :clicked="clicked"  v-on:closer="removeClicked"></img-screen>
+</div>
 
 </div>
+
+
+
+<script id="img-screen" type="text/x-template">
+    <div>
+    <div id="bg" @click="modalClose"></div>
+            <div id="modal">
+                <img class="modimg" v-bind:src= "clicked.url">
+                <h1>{{clicked.title}}</h1>
+                <h2>{{clicked.description}}</h2>
+                <p> Uploaded by {{clicked.username}} on {{clicked.created_at}}</p2>
+                <h1>Add a comment!</h1>
+                <form>
+                    <input type="text" placeholder="comment" v-model = "form.comment" name = "comment"> </input>
+                    <input type="text" placeholder="username" v-model = "form.username" name = "username"> </input>
+                    <button @click = "addComment"> COMMENT! </button>
+                </form>
+            </div>
+        </div>
+</script>
 <script src="/js/axios.min.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/script.js"></script>
