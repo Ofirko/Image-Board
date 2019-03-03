@@ -28,11 +28,29 @@ var uploader = multer({
 });
 
 app.get("/get-images", (req, res) => {
-    console.log("get images invoked");
-    db.getAllImages()
+    db.getFirstImages()
         .then(data => {
             console.log(data.rows);
             res.json(data.rows);
+        })
+        .catch(err => {
+            console.log("db error", err);
+        });
+});
+
+app.get("/get-more", (req, res) => {
+    console.log(req.query.lastId);
+    db.getNextImages(req.query.lastId)
+        .then(data => {
+            db.getLastImage()
+                .then(number => {
+                    console.log(data.rows);
+                    console.log("last image: " + number.rows[0].id);
+                    res.json([data.rows, number.rows[0].id]);
+                })
+                .catch(err => {
+                    console.log("db error", err);
+                });
         })
         .catch(err => {
             console.log("db error", err);
@@ -60,11 +78,13 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
 });
 
 app.get("/current-image/", (req, res) => {
-    console.log("current image invoked");
-    db.fetchImage(req.query.id)
-        .then(data => {
-            console.log(data.rows);
-            res.json(data.rows);
+    console.log("current image invoked", req.query.id);
+
+    Promise.all([db.fetchImage(req.query.id), db.fetchComments(req.query.id)])
+        .then(([imgdata, comments]) => {
+            console.log(comments);
+            console.log(imgdata.rows);
+            res.json({ image: imgdata.rows, comments: comments.rows });
         })
         .catch(err => {
             console.log("db error", err);

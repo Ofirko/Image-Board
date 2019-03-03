@@ -23,11 +23,12 @@
 <img v-bind:src= "image.url" >
 <h3 class="title">{{image.title}}</h3>
 </div>
-<p v-if= 'images.length === 0'>NO IMAGES AT THE MOMENT</p>
 
 </div>
+<p v-if= 'images.length === 0'>NO IMAGES AT THE MOMENT</p>
+<button v-if = "button" @click="morePics"> MORE </button>
 <div  v-if = "clicked">
-<img-screen :clicked="clicked"  v-on:closer="removeClicked"></img-screen>
+<img-screen :clicked="clicked" :comments="comments" v-on:closer="removeClicked"></img-screen>
 </div>
 
 </div>
@@ -48,6 +49,12 @@
                     <input type="text" placeholder="username" v-model = "form.username" name = "username"> </input>
                     <button @click = "addComment"> COMMENT! </button>
                 </form>
+                <div v-for="comment in comments">
+                    <div class="comment">
+                    <p>{{comment.comment}} </p>
+                    <p> Written by {{comment.username}} on {{comment.created_at}}</p>
+                    </div>
+                </div>
             </div>
         </div>
 </script>

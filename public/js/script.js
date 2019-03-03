@@ -11,6 +11,8 @@
             // name: "Ofir Katz",
             images: [],
             clicked: null,
+            comments: [],
+            button: true,
             current: function() {
                 return {
                     clicked: clicked
@@ -63,11 +65,12 @@
                             id: id
                         }
                     })
-                    .then(function(resp) {
-                        console.log(resp.data);
+                    .then(function(data) {
+                        console.log(data);
                         console.log("Axios worked");
-                        self.clicked = resp.data[0];
-                        console.log("data looks like this", self.clicked);
+                        self.clicked = data.data.image[0];
+                        self.comments = data.data.comments;
+                        console.log("comments looks like this", self.comments);
                     })
                     .catch(err => {
                         console.log("axios error", err);
@@ -77,6 +80,41 @@
             removeClicked: function() {
                 console.log("event bubbled up!");
                 this.clicked = null;
+            },
+            morePics: function() {
+                let self = this;
+                let lastId = null;
+                console.log(this.images.length);
+                if (this.images[this.images.length - 1]) {
+                    lastId = this.images[this.images.length - 1].id;
+                }
+                axios
+                    .get("/get-more", {
+                        params: {
+                            lastId: lastId
+                        }
+                    })
+                    .then(function(resp) {
+                        console.log("Axios worked");
+                        console.log(
+                            "CURRENT LAST PIC",
+                            resp.data[0][resp.data[0].length - 1].id
+                        );
+                        console.log("number:", resp.data[1]);
+                        if (
+                            resp.data[0][resp.data[0].length - 1].id ==
+                            resp.data[1]
+                        ) {
+                            self.button = false;
+                        }
+                        for (var i = 0; i < resp.data[0].length; i++) {
+                            self.images.push(resp.data[0][i]);
+                        }
+                        console.log("images looks like this", self.images);
+                    })
+                    .catch(err => {
+                        console.log("axios error", err);
+                    });
             }
         },
         mounted: function getImg() {
@@ -105,7 +143,7 @@
             };
         },
         template: "#img-screen",
-        props: ["clicked"],
+        props: ["clicked", "comments"],
         methods: {
             modalClose: function(e) {
                 e.stopPropagation();
@@ -115,7 +153,14 @@
             addComment: function(e) {
                 e.preventDefault();
                 let self = this;
+                let date = new Date();
+                console.log(date);
                 console.log("add comment running!", this.clicked.id);
+                self.comments.unshift({
+                    username: this.form.username,
+                    comment: this.form.comment,
+                    created_at: date
+                });
                 axios
                     .post("/addComment", {
                         username: this.form.username,

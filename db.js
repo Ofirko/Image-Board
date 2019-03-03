@@ -8,8 +8,30 @@ let path =
     "@localhost:5432/wintergreen-imageboard";
 var db = spicedPg(process.env.DATABASE_URL || path);
 
-module.exports.getAllImages = function getAllImages() {
-    return db.query("SELECT * FROM images");
+module.exports.getFirstImages = function getFirstImages() {
+    return db.query(
+        `SELECT * FROM images
+        ORDER BY id DESC
+        LIMIT 12`
+    );
+};
+
+module.exports.getNextImages = function getNextImages(lastId) {
+    return db.query(
+        `SELECT * FROM images
+        WHERE id < $1
+        ORDER BY id DESC
+        LIMIT 12`,
+        [lastId]
+    );
+};
+
+module.exports.getLastImage = function getLastImage() {
+    return db.query(
+        `SELECT id FROM images
+        ORDER BY id ASC
+        LIMIT 1`
+    );
 };
 
 module.exports.uploadImage = function uploadImage(
@@ -36,6 +58,9 @@ module.exports.addComment = function addComment(username, comment, picId) {
 };
 
 module.exports.fetchComments = function fetchComments(id) {
-    return db.query("SELECT * FROM comments WHERE picId = $1", [id]);
+    return db.query(
+        "SELECT * FROM comments WHERE picId = $1 ORDER BY created_at DESC",
+        [id]
+    );
 };
 // SELECT * FROM images WHERE id < $1 ORDER BY id DESC LIMIT 20 ;
