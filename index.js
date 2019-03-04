@@ -69,7 +69,7 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
         req.body.description
     )
         .then(data => {
-            console.log(data.rows);
+            console.log("data i get back from the promise", data.rows);
             res.json(data.rows);
         })
         .catch(err => {

@@ -34,7 +34,7 @@
                     .post("/upload", formData)
                     .then(function(resp) {
                         console.log("Axios worked", resp);
-                        self.images.unshift(resp);
+                        self.images.unshift(resp.data[0]);
                         console.log("images2 looks like this", self.images);
                     })
                     .catch(err => {

@@ -31,9 +31,6 @@ exports.upload = function(req, res, next) {
     s3Request.on("response", s3Response => {
         console.log("s3Response.statusCode", s3Response.statusCode);
         const wasSuccessful = s3Response.statusCode == 200;
-        res.json({
-            success: wasSuccessful
-        });
         next();
     });
 };
